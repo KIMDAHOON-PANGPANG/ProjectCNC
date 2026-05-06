@@ -7,38 +7,52 @@
 
 ---
 
-## 0. **다른 PC에서 처음 시작하는 절차** (5분)
+## 0. **사용자의 다른 PC (집 / 노트북 등)에서 시작하는 절차** (5분)
+
+> **주 시나리오**: 같은 사용자가 다른 Windows PC에서 이어서 작업.
+> macOS/Linux도 부산물로 작동하지만 주 대상은 **다른 Windows PC**.
+> 사용자명 / Godot 경로 / 클론 위치만 PC마다 다르고, 나머지는 동일.
 
 ### Step 1. 의존성 확인
-| 도구 | 최소 버전 | 검증 명령 |
+| 도구 | 검증 명령 | 비고 |
 |---|---|---|
-| Git | any | `git --version` |
-| Godot 4.7-dev2 | 정확히 dev2 빌드 (안정 4.x도 가능, 일부 leak 자동 해소) | `godot --version` 또는 `<godot_path>/Godot --version` |
-| Python 3 | 3.6+ (analyze_csv.py 용, stdlib만 사용) | `python --version` 또는 `python3 --version` |
-| Bash | git-bash / WSL / 기본 셸 | `bash --version` |
+| Git + git-bash | `git --version` | Windows: Git for Windows 설치 시 git-bash 포함 |
+| Godot 4.7-dev2 | `<godot_path> --version` | Windows: 압축 푼 폴더의 `_console.exe` 권장 |
+| Python 3 | `python --version` | analyze_csv.py 용 (Windows에선 Microsoft Store 또는 python.org) |
 
-### Step 2. Godot 4.7-dev2 다운로드 (없으면)
+### Step 2. Godot 4.7-dev2 (없으면 받기)
 - 공식: https://godotengine.org/download/archive/4.7-dev2/
-- 직접 dl: `Godot_v4.7-dev2_<os>.zip` 또는 `_console.zip` (console 버전이 stdout 캡처에 좋음)
-- 압축 풀어 임의 경로에 두기
+- Windows: `Godot_v4.7-dev2_win64_console.zip` (console 버전이 stdout 캡처 가능)
+- 압축 풀어 **Desktop / Downloads / C:\Godot / D:\Godot 중 어디든** 두기 (env_check.sh가 자동 검색)
 
-### Step 3. 클론 + 환경 검출
+### Step 3. 프로젝트 클론
 ```bash
+# git-bash에서:
 git clone https://github.com/KIMDAHOON-PANGPANG/ProjectCNC.git
 cd ProjectCNC
-bash SaveWork/env_check.sh          # 환경 자동 검출 + 검증 명령 출력
+```
+※ 첫 PC에서는 GitHub 인증 필요 (PAT 또는 SSH key). git config user.email/name도 PC별 셋업.
+
+### Step 4. 환경 자동 검출 + 검증
+```bash
+bash SaveWork/env_check.sh                      # 1. 환경 검출
+source <(bash SaveWork/env_check.sh --export)   # 2. env 적용
+bash SaveWork/env_check.sh --verify             # 3. §I-7 자동 검증
 ```
 
-### Step 4. 환경변수 export
-`env_check.sh` 출력의 `export GODOT_BIN=...` 줄을 셸에 그대로 복사 실행. 또는 수동:
+`env_check.sh`가 자동 처리하는 PC별 차이:
+- **사용자명**: `$HOME` / `$USERNAME` 자동
+- **Godot 위치**: PATH → Desktop / Downloads / Program Files / C:\Godot / D:\Godot 순서 자동 검색
+- **프로젝트 위치**: `$(pwd)` 자동
+- **AppData 경로**: `$APPDATA` 자동 (사용자명 포함된 절대경로 변환)
 
-| OS | 예시 |
-|---|---|
-| **Windows (git-bash)** | `export GODOT_BIN="/c/Users/<user>/Desktop/Godot_v4.7-dev2_win64.exe/Godot_v4.7-dev2_win64_console.exe"` |
-| **macOS** | `export GODOT_BIN="/Applications/Godot.app/Contents/MacOS/Godot"` 또는 dmg 압축 푼 경로 |
-| **Linux** | `export GODOT_BIN="$HOME/godot/Godot_v4.7-dev2_linux.x86_64"` |
-
-`PROJECT_PATH`는 자동으로 `pwd`로 설정 가능.
+### Step 5. Godot 검출 실패 시
+env_check.sh가 `[ERROR] Godot CLI not found` 출력하면 수동 export:
+```bash
+export GODOT_BIN="/c/Users/<USERNAME>/Downloads/Godot_v4.7-dev2_win64.exe"  # 실제 위치로
+bash SaveWork/env_check.sh --verify
+```
+이 경로를 env_check.sh의 `GODOT_CANDIDATES`에 추가하면 다음 PC에서도 자동 검출됨.
 
 ### Step 5. 첫 import (필수, class_name 캐시 빌드)
 ```bash

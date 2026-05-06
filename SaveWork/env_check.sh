@@ -33,21 +33,33 @@ case "$OS" in
         if command -v godot >/dev/null 2>&1; then
             GODOT_BIN="$(command -v godot)"
         fi
-        # 2) 흔한 위치들
+        # 2) 흔한 설치 위치들 (사용자 PC마다 다를 수 있음)
         GODOT_CANDIDATES=(
             "$HOME/Desktop/Godot_v4.7-dev2_win64.exe/Godot_v4.7-dev2_win64_console.exe"
             "$HOME/Desktop/Godot_v4.7-dev2_win64_console.exe"
             "$HOME/Desktop/Godot_v4.7-dev2_win64.exe"
+            "$HOME/Downloads/Godot_v4.7-dev2_win64.exe/Godot_v4.7-dev2_win64_console.exe"
+            "$HOME/Downloads/Godot_v4.7-dev2_win64_console.exe"
             "/c/Users/$WIN_USER/Desktop/Godot_v4.7-dev2_win64.exe/Godot_v4.7-dev2_win64_console.exe"
             "/c/Program Files/Godot/Godot.exe"
             "/c/Program Files/Godot Engine/Godot.exe"
             "/c/Godot/Godot.exe"
+            "/d/Godot/Godot.exe"
+            "/d/Godot/Godot_v4.7-dev2_win64.exe"
+            "/d/Godot/Godot_v4.7-dev2_win64_console.exe"
         )
-        # 3) Desktop glob — 정확한 버전 알 수 없을 때
+        # 3) glob 광범위 검색 — Desktop / Downloads / D:\Godot 폴더 등
         if [ -z "$GODOT_BIN" ]; then
-            for f in "$HOME"/Desktop/Godot*win64*console.exe "$HOME"/Desktop/Godot*/Godot*console.exe; do
-                if [ -f "$f" ]; then
-                    GODOT_BIN="$f"
+            for pattern in \
+                "$HOME"/Desktop/Godot*win64*console.exe \
+                "$HOME"/Desktop/Godot*/Godot*console.exe \
+                "$HOME"/Desktop/Godot*/Godot*win64.exe \
+                "$HOME"/Downloads/Godot*win64*console.exe \
+                "$HOME"/Downloads/Godot*/Godot*console.exe \
+                /c/Godot*/Godot*.exe \
+                /d/Godot*/Godot*.exe ; do
+                if [ -f "$pattern" ]; then
+                    GODOT_BIN="$pattern"
                     break
                 fi
             done
