@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://djbic4ri8n2yi"]
+
+[ext_resource type="PackedScene" path="res://scenes/player/player_2d.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/room_01_tutorial.tscn" id="2_room1"]
+[ext_resource type="Script" uid="uid://bccq51dpipo5s" path="res://scripts/ui/edge_indicator.gd" id="3_edge"]
+[ext_resource type="Script" uid="uid://drgqmvkblvpgw" path="res://scripts/systems/boot.gd" id="4_boot"]
+[ext_resource type="Script" uid="uid://3bow62k5ucwu" path="res://scripts/ui/hud.gd" id="5_hud"]
+
+[node name="Chapter1" type="Node2D" unique_id=1322811539]
+
+[node name="World" type="Node2D" parent="." unique_id=379801814]
+
+[node name="Room01" parent="World" unique_id=351889111 instance=ExtResource("2_room1")]
+
+[node name="DaggerLayer" type="Node2D" parent="." unique_id=1847459500]
+z_index = 10
+
+[node name="Player" parent="." unique_id=2081757021 instance=ExtResource("1_player")]
+position = Vector2(80, 180)
+dagger_layer_path = NodePath("../DaggerLayer")
+
+[node name="Camera" type="Camera2D" parent="Player" unique_id=2123426273]
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=231604246]
+
+[node name="EdgeIndicator" type="Control" parent="HUD" unique_id=720455992]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("3_edge")
+
+[node name="Stats" type="Control" parent="HUD" unique_id=1597558950]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("5_hud")
+
+[node name="Boot" type="Node" parent="." unique_id=287659524]
+script = ExtResource("4_boot")

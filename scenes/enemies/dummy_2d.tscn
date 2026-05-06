@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/dummy.gd" id="1_dummy_script"]
+[ext_resource type="Resource" path="res://resources/visual/enemy_visual_2d.tres" id="2_enemy_visual"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dummy"]
+size = Vector2(8, 8)
+
+[node name="Dummy" type="CharacterBody2D"]
+collision_layer = 8
+collision_mask = 1
+script = ExtResource("1_dummy_script")
+visual = ExtResource("2_enemy_visual")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_dummy")

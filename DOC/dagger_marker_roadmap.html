@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dagger Marker Action — Prototyping Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg: #0a0c10;
+    --bg-2: #0f1217;
+    --surface: #141821;
+    --surface-2: #1a1f2a;
+    --border: #232a36;
+    --border-bright: #313a4a;
+    --text: #e7ecf3;
+    --text-dim: #8b95a4;
+    --text-faint: #5a6473;
+    --cyan: #00e5ff;
+    --cyan-soft: #00e5ff22;
+    --magenta: #ff3d8a;
+    --magenta-soft: #ff3d8a22;
+    --amber: #f5b041;
+    --green: #4ade80;
+    --red: #ef4444;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans KR', system-ui, -apple-system, sans-serif;
+  }
+
+  *{box-sizing: border-box;}
+  html, body{margin:0; padding:0;}
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, #00e5ff0a 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, #ff3d8a08 0%, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  /* Grid background */
+  body::before{
+    content:'';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 80px 80px;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container{
+    position: relative;
+    z-index: 1;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 48px 32px 96px;
+  }
+
+  /* Header */
+  .hero{
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%);
+    padding: 40px 40px 36px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before{
+    content:'';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta), transparent);
+  }
+  .hero .eyebrow{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero .eyebrow::after{
+    content:'';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--cyan), transparent);
+  }
+  .hero h1{
+    font-family: var(--mono);
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 .accent{ color: var(--cyan); }
+  .hero h1 .slash{ color: var(--text-faint); margin: 0 6px; }
+  .hero .sub{
+    font-size: 15px;
+    color: var(--text-dim);
+    max-width: 760px;
+    margin-top: 12px;
+  }
+  .hero .meta{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--border);
+  }
+  .meta-item .label{
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+  .meta-item .value{
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .meta-item .value strong{ color: var(--cyan); font-weight: 700; }
+
+  /* Hypothesis box */
+  .hypothesis{
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--magenta);
+    background: var(--surface);
+    padding: 24px 28px;
+    margin-bottom: 40px;
+  }
+  .hypothesis .label{
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--magenta);
+    margin-bottom: 10px;
+  }
+  .hypothesis p{
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  .hypothesis p strong{ color: var(--cyan); font-weight: 600; }
+
+  /* Timeline */
+  .timeline{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    margin-bottom: 48px;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    padding: 4px;
+  }
+  .timeline-cell{
+    padding: 14px 12px;
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-top: 2px solid transparent;
+    text-align: left;
+  }
+  .timeline-cell:hover{
+    background: var(--surface-2);
+    border-top-color: var(--cyan);
+  }
+  .timeline-cell .num{
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+  }
+  .timeline-cell .name{
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 4px 0 2px;
+  }
+  .timeline-cell .dur{
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--cyan);
+  }
+
+  /* Progress overall */
+  .progress-bar{
+    height: 4px;
+    background: var(--border);
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-fill{
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta));
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  .progress-label{
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+  }
+  .progress-label .pct{ color: var(--cyan); font-weight: 700;}
+
+  /* Phase card */
+  .phase{
+    border: 1px solid var(--border);
+    background: var(--surface);
+    margin-bottom: 24px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .phase.complete{ border-color: var(--green); }
+  .phase-head{
+    padding: 24px 28px;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid transparent;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .phase-head:hover{ background: var(--surface-2); }
+  .phase.open .phase-head{ border-bottom-color: var(--border); }
+
+  .phase-num{
+    font-family: var(--mono);
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-faint);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    width: 60px;
+    flex-shrink: 0;
+  }
+  .phase.open .phase-num{ color: var(--cyan); }
+
+  .phase-info{ flex: 1; min-width: 0; }
+  .phase-name{
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .phase-tagline{
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .phase-meta{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .phase-meta .duration{
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--cyan);
+    background: var(--cyan-soft);
+    padding: 4px 10px;
+    border: 1px solid var(--cyan);
+    letter-spacing: 0.05em;
+  }
+  .phase-meta .progress-mini{
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .phase-meta .progress-mini b{ color: var(--text); }
+
+  .chevron{
+    width: 24px; height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-faint);
+    transition: transform 0.2s;
+  }
+  .phase.open .chevron{ transform: rotate(90deg); color: var(--cyan); }
+
+  .phase-body{
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .phase.open .phase-body{ max-height: 4000px; }
+
+  .phase-content{
+    padding: 32px 28px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 32px;
+  }
+  @media (max-width: 800px){
+    .phase-content{ grid-template-columns: 1fr; }
+  }
+
+  .col-section{ margin-bottom: 28px; }
+  .col-section:last-child{ margin-bottom: 0; }
+
+  .section-title{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .dot{
+    width: 6px; height: 6px;
+    background: var(--cyan);
+    display: inline-block;
+  }
+  .section-title.danger .dot{ background: var(--red); }
+  .section-title.warn .dot{ background: var(--amber); }
+  .section-title.ok .dot{ background: var(--green); }
+
+  .goal-box{
+    background: var(--bg-2);
+    border-left: 2px solid var(--cyan);
+    padding: 16px 18px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .goal-box strong{ color: var(--cyan); }
+
+  /* Checklist */
+  .checklist{ list-style: none; padding: 0; margin: 0; }
+  .checklist li{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.15s;
+  }
+  .checklist li:last-child{ border-bottom: none; }
+  .checklist li:hover .check{ border-color: var(--cyan); }
+  .check{
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--border-bright);
+    flex-shrink: 0;
+    margin-top: 3px;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .checklist li.done .check{
+    background: var(--cyan);
+    border-color: var(--cyan);
+  }
+  .checklist li.done .check::after{
+    content: '';
+    position: absolute;
+    left: 5px; top: 1px;
+    width: 5px; height: 10px;
+    border-right: 2px solid var(--bg);
+    border-bottom: 2px solid var(--bg);
+    transform: rotate(45deg);
+  }
+  .check-text{
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .checklist li.done .check-text{
+    color: var(--text-faint);
+    text-decoration: line-through;
+    text-decoration-color: var(--text-faint);
+  }
+  .check-text .tag{
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.05em;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 1px 6px;
+    margin-right: 6px;
+    vertical-align: 2px;
+  }
+
+  /* Kill criteria */
+  .kill-card{
+    border: 1px solid var(--red);
+    background: #ef444410;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .kill-card .kill-q{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .kill-card .kill-body{
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .kill-card .kill-body strong{ color: var(--text); }
+
+  /* Trap card */
+  .trap-card{
+    border: 1px solid var(--amber);
+    background: #f5b04110;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .trap-card .trap-label{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .trap-card .trap-body{
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+
+  /* Output card */
+  .output-card{
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .output-card .out-label{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .output-card .out-body{
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .output-card .out-body strong{ color: var(--text); }
+
+  /* Decision tree */
+  .decision{
+    margin-top: 56px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 36px 32px;
+  }
+  .decision h2{
+    font-family: var(--mono);
+    font-size: 22px;
+    margin: 0 0 8px;
+  }
+  .decision .lead{
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+  .branches{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 800px){
+    .branches{ grid-template-columns: 1fr; }
+  }
+  .branch{
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    padding: 22px;
+    transition: all 0.2s;
+  }
+  .branch:hover{ border-color: var(--border-bright); transform: translateY(-2px); }
+  .branch .verdict{
+    font-family: var(--mono);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+  .branch.go .verdict{ color: var(--green); }
+  .branch.pivot .verdict{ color: var(--amber); }
+  .branch.kill .verdict{ color: var(--red); }
+  .branch .crit{
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+    line-height: 1.55;
+  }
+  .branch ul{
+    list-style: none;
+    padding: 0; margin: 0;
+    font-size: 13px;
+  }
+  .branch ul li{
+    padding: 6px 0;
+    border-top: 1px dashed var(--border);
+    color: var(--text);
+  }
+  .branch ul li::before{
+    content: '→ ';
+    color: var(--text-faint);
+    font-family: var(--mono);
+  }
+
+  /* Footer note */
+  .footer-note{
+    margin-top: 48px;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+  .footer-note .reset{
+    color: var(--magenta);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    background: none;
+    border: none;
+    font: inherit;
+    padding: 0;
+  }
+  .footer-note .reset:hover{ color: var(--text); }
+
+  /* Mobile adjustments */
+  @media (max-width: 700px){
+    .container{ padding: 24px 16px 64px; }
+    .hero{ padding: 28px 24px 24px; }
+    .hero h1{ font-size: 26px; }
+    .timeline{ grid-template-columns: repeat(2, 1fr); }
+    .phase-head{ padding: 18px 20px; gap: 14px; }
+    .phase-num{ font-size: 24px; width: 44px; }
+    .phase-name{ font-size: 15px; }
+    .phase-content{ padding: 20px; }
+    .phase-meta .duration{ font-size: 10px; padding: 3px 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="eyebrow">DAGGER · MARKER · ACTION / Solo Indie Roadmap</div>
+    <h1>
+      단검 마커 액션<span class="slash">/</span>프로토타이핑 <span class="accent">로드맵</span>
+    </h1>
+    <p class="sub">
+      카타리나 W 스킬을 횡스크롤 닌자 액션으로 가져온 코어 메커닉 검증 플랜.
+      6단계 게이팅으로 진행하며 각 단계마다 <strong style="color:var(--magenta)">Kill Criteria</strong>를 두고
+      재미가 나오지 않으면 즉시 피벗·드롭 결정합니다.
+    </p>
+
+    <div class="meta">
+      <div class="meta-item">
+        <div class="label">Engine</div>
+        <div class="value"><strong>Godot 4.6</strong> · GDScript</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">Reference</div>
+        <div class="value">Cyber Shadow · 닌자일섬 · The Messenger</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">Total ETA</div>
+        <div class="value"><strong>10 ~ 14주</strong> (Vertical Slice 까지)</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">Team Size</div>
+        <div class="value">Solo · 다훈 (combat/code)</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HYPOTHESIS -->
+  <div class="hypothesis">
+    <div class="label">▼ CORE HYPOTHESIS</div>
+    <p>
+      플레이어는 <strong>"단검을 어디에 박을지 결정하는 1초"</strong>의 무게 때문에 계속 플레이한다.
+      단검 = 미래의 내 위치를 예약하는 공간 약속(spatial commitment)이고,
+      이 약속을 <strong>전투 + 플랫포밍 양쪽에서 동일한 동사</strong>로 푸는 것이 차별점이다.
+    </p>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline" id="timeline"></div>
+
+  <!-- PROGRESS -->
+  <div class="progress-label">
+    <span>OVERALL PROGRESS</span>
+    <span class="pct" id="progressText">0 / 0</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <!-- PHASES -->
+  <div id="phases"></div>
+
+  <!-- DECISION TREE -->
+  <div class="decision">
+    <h2>Phase 5 종료 후 / Go-No-Go 분기</h2>
+    <p class="lead">
+      Vertical Slice 외부 플레이테스트(5명)와 본인 30분 풀플레이를 끝낸 다음,
+      아래 세 갈래 중 하나로 결정합니다. 직감으로 가지 말고 데이터로 가세요.
+    </p>
+    <div class="branches">
+      <div class="branch go">
+        <div class="verdict">GO</div>
+        <div class="crit">5명 중 3명 이상 "또 하고 싶다" + 본인 30분 플레이에 매너리즘 없음</div>
+        <ul>
+          <li>풀 프로덕션 일정 산정 (1챕터 × 8~10)</li>
+          <li>아트/사운드 외주 또는 에셋 파이프라인 본격화</li>
+          <li>스팀 페이지 오픈 + 위시리스트 수집 시작</li>
+        </ul>
+      </div>
+      <div class="branch pivot">
+        <div class="verdict">PIVOT</div>
+        <div class="crit">메커닉은 살아있으나 장르/스코프 / 톤이 안 맞음</div>
+        <ul>
+          <li>로그라이트 단편 / 보스러시 모드로 전환 검토</li>
+          <li>스코어어택(닌자일섬 형) vs 메트로배니아(Cyber Shadow 형) 재선택</li>
+          <li>코어 메커닉 유지, 셸만 교체 → 시간 손실 최소화</li>
+        </ul>
+      </div>
+      <div class="branch kill">
+        <div class="verdict">KILL</div>
+        <div class="crit">5룸 중 3룸 이상이 메커닉 없이 풀려버림 = 메커닉 자체가 약함</div>
+        <ul>
+          <li>코어 가설 폐기, 다른 메커닉으로 재시작</li>
+          <li>여기까지의 자산은 다음 프로젝트 토대로 보관</li>
+          <li>Building Breaker 등 다른 트랙으로 전환</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    DAGGER · MARKER · ACTION ROADMAP v1.0 ·
+    체크 상태는 브라우저에 저장됩니다 ·
+    <button class="reset" id="resetBtn">전체 초기화</button>
+  </div>
+
+</div>
+
+<script>
+  // ============ DATA ============
+  const phases = [
+    {
+      id: 'p0',
+      name: 'Pre-production / 가설 정렬',
+      tagline: '“이 메커닉이 진짜 재밌는지”를 검증할 수 있는 룰을 한 페이지에 다 적기',
+      duration: '3 ~ 5 일',
+      goal: '코어 메커닉의 룰을 종이 한 장에 다 담는다. 한 장에 안 담기면 이미 너무 복잡한 것.',
+      checklist: [
+        { tag: 'DOC', text: '코어 가설 1줄 작성: "플레이어는 ___ 때문에 계속 플레이한다"' },
+        { tag: 'RULE', text: '마커 생성 룰 결정 (A: 평타도 박힘 / B: 던지기만 박힘 / C: 처형 시에만) — B 또는 C 권장' },
+        { tag: 'RULE', text: '박힘 가능 면 vs 불가능 면 정의 (모든 콜라이더에 태그 필요)' },
+        { tag: 'RULE', text: '동시 마커 최대 개수, 마커 수명(시간/조건), 텔레포트 비용(쿨다운/리소스)' },
+        { tag: 'UX', text: '화면 밖 마커 인디케이터 컨셉 스케치 (엣지 화살표 / 미니맵 / 없음)' },
+        { tag: 'UX', text: '텔레포트 입력 방식 결정 (방향키+버튼 자동흡착 권장)' },
+        { tag: 'KILL', text: 'Fail Condition 정의: 어떤 결과가 나오면 피벗할 것인가' },
+        { tag: 'REF', text: '데드카피 베이스라인 1페이지 (Cyber Shadow 수치표 — supplement §A)' },
+        { tag: 'RULE', text: 'Bounce Chain 룰: 튕김 횟수 / 동시 마커 max / 체인 윈도우 (supplement §B)' },
+        { tag: 'FEEL', text: 'Game Feel 목표 1페이지: 던지기 / 박힘 / 텔레포트 시청각·진동 (supplement §D)' },
+        { tag: 'ARCH', text: 'Greybox-First 원칙: 모든 비주얼 색깔 박스, 에셋 없이 Phase 1~4 검증 (supplement §H-1)' },
+        { tag: 'ARCH', text: 'Logic-View 분리: PlayerLogic 차원 무관 + PlayerBody2D/3D wrapper (supplement §H-2)' },
+        { tag: 'ARCH', text: 'VisualResource 패턴: 텍스처/메시 swap 1줄로 에셋 교체 (supplement §H-3)' },
+      ],
+      kills: [
+        {
+          q: 'KILL CRITERIA',
+          body: '룰이 한 페이지(A4 1장 / 노션 1스크롤)에 안 담기면 <strong>스코프가 너무 큼</strong>. 메커닉을 단순화하거나 변수 1~2개를 잘라내고 다시 시작.'
+        }
+      ],
+      traps: [
+        {
+          body: '<strong>"이거 멋질 것 같다"는 직감으로 변수를 늘리지 말 것.</strong> 변수 1개 늘 때마다 검증 시간이 2배 늘어남. 마커 종류, 마커 변수, 적 종류 다 합쳐서 5개 이하로.'
+        }
+      ],
+      outputs: [
+        { body: '<strong>Design Memo</strong> 1장 (Notion / Markdown)' },
+        { body: '<strong>Rule Table</strong>: 마커 입출력 / 면 종류 / 텔레포트 비용 / 적 반응' },
+        { body: '<strong>Greybox Concept Sketch</strong> 5룸 (종이/Figma)' },
+      ]
+    },
+    {
+      id: 'p1',
+      name: 'Combat Core / 1분 루프',
+      tagline: '빈 박스 룸 + 더미 적 1마리 + 단검 메커닉만으로 60초가 재밌는가',
+      duration: '1 ~ 2 주',
+      goal: '시각적으로 못생겨도 OK. <strong>"내가 박은 단검으로 슉슉 옮겨다니는 것 자체"가 재미있어야 함.</strong> 적 다양화 절대 금지.',
+      checklist: [
+        { tag: 'CODE', text: 'CharacterBody2D 기반 캐릭터 이동 + 점프 (가속/마찰 튜닝)' },
+        { tag: 'CODE', text: '단검 던지기 (RigidBody2D 또는 RayCast 방식 결정)' },
+        { tag: 'CODE', text: '단검 박힘 처리 (벽/바닥/천장 / signal 발행)' },
+        { tag: 'CODE', text: '박힌 단검 → 텔레포트 (Tween 0.1~0.2초 + i-frame)' },
+        { tag: 'CODE', text: '방향키 + 텔레포트 버튼 자동 흡착 로직 (가장 가까운 마커)' },
+        { tag: 'CODE', text: '화면 밖 마커 엣지 인디케이터 (Control 노드)' },
+        { tag: 'AI', text: '더미 적 1종 (HP만 있는 슬라임 / 패턴 없음)' },
+        { tag: 'FX', text: '텔레포트 잔상(afterimage) + 박힘 임팩트 셰이크 (placeholder OK)' },
+        { tag: 'TEST', text: '본인 60초 플레이 × 5회. 같은 조작 패턴이 5회 모두 다른가?' },
+        { tag: 'REF', text: 'Cyber Shadow 베이스라인 수치 1:1 카피 (Day 1, supplement §A)' },
+        { tag: 'CODE', text: 'Bounce Chain v0: 적 1회 / 벽 1회 튕김 (총 2박힘, Day 4)' },
+        { tag: 'FEEL', text: 'Game Feel placeholder 7종 일괄 (Day 5, supplement §D)' },
+        { tag: 'ARCH', text: 'Player를 PlayerLogic(RefCounted) + PlayerBody2D(CharacterBody2D wrap)로 분리 작성' },
+        { tag: 'ARCH', text: '모든 placeholder를 Greybox autoload로 생성 (텍스처/메시 직접 참조 금지)' },
+      ],
+      kills: [
+        {
+          q: 'KILL CRITERIA',
+          body: '본인이 60초 플레이를 5번 했을 때 <strong>같은 조작 패턴이 4번 이상 반복</strong>되면 메커닉 자체에 표현력이 부족. 변수 추가 전에 입력 방식을 다시 봐야 함.'
+        },
+        {
+          q: 'KILL CRITERIA',
+          body: '텔레포트 후 1초 안에 다음 텔레포트가 자연스럽게 이어지지 않으면 <strong>리듬이 끊어진 것</strong>. 쿨다운/i-frame 길이가 잘못됐거나, 마커 흡착 UX가 느림.'
+        }
+      ],
+      traps: [
+        {
+          body: '<strong>이 단계에서 적을 다양화하면 절대 안 됨.</strong> 더미 적 1종으로 충분. "전투가 재미없는 건 적이 단조로워서"라고 생각하기 쉬운데, 실제론 메커닉이 약한 거임.'
+        },
+        {
+          body: '<strong>아트/이펙트에 욕심내지 말 것.</strong> 컬러풀한 placeholder 도형이면 충분. 여기서 폴리시하면 다음 단계 못 감.'
+        }
+      ],
+      outputs: [
+        { body: '<strong>Playable Prototype v0.1</strong>: 1 화면 빈 박스 + 단검 + 더미 적' },
+        { body: '<strong>Combat Spec</strong>: 단검 동작 / 텔레포트 / 흡착 룰 문서화' },
+        { body: '<strong>Self-Test Log</strong>: 60초 × 5회 플레이 영상/메모' },
+      ]
+    },
+    {
+      id: 'p2',
+      name: 'Level Verbs / 5분 룸',
+      tagline: '단검 메커닉으로 풀어내는 공간 퍼즐이 의미 있는가',
+      duration: '2 ~ 3 주',
+      goal: '룸 모듈 카탈로그를 만들고 그레이박스 룸 5개 제작. <strong>한 룸당 5분 이상 가지고 놀 수 있는 의미</strong>가 나와야 함.',
+      checklist: [
+        { tag: 'DOC', text: '박힘 면 종류 정의 (벽/천장/바닥/부서지는 면/쇠창살/이동 플랫폼 등 4~6종)' },
+        { tag: 'DOC', text: '룸 모듈 카탈로그 작성 (수직 점프 / 수평 추격 / 1대多 처형 / 점프 퍼즐 / 추격당하는 룸 / 보스 아레나)' },
+        { tag: 'CODE', text: '룸 간 전환 시스템 (도어 / 체크포인트 / 카메라 트랜지션)' },
+        { tag: 'CODE', text: '죽음 / 리스폰 / 마커 초기화 처리' },
+        { tag: 'LD', text: '그레이박스 룸 5개 제작 (각 다른 모듈 컨텍스트로)' },
+        { tag: 'TEST', text: '본인 외 1명 플레이테스트 → 5룸 중 메커닉 없이 풀 수 있는 룸 개수 카운트' },
+        { tag: 'TEST', text: '각 룸당 평균 클리어 시도 횟수 기록 (3~7회가 이상적)' },
+        { tag: 'ROOM', text: 'Bounce Chain 강제 룸 5개 중 3개 이상 (supplement §C — 코어 룸 5종)' },
+        { tag: 'RULE', text: '튕기는 면 vs 흡수하는 면 표면 타입 분리 (튕김면은 1회 반사 허용)' },
+      ],
+      kills: [
+        {
+          q: 'KILL CRITERIA',
+          body: '5룸 중 <strong>3룸 이상</strong>이 단검 메커닉 없이도 풀린다면 메커닉이 레벨에서 안 살고 있음. 메커닉을 강제하는 룸 디자인 룰이 필요하거나, 메커닉 자체가 약한 것.'
+        },
+        {
+          q: 'KILL CRITERIA',
+          body: '평균 클리어 시도 횟수가 1~2회라면 너무 쉽고, 10회 이상이면 너무 어려움. <strong>4~7회</strong>가 "딱 풀 만한데 도전적"인 스위트 스팟.'
+        }
+      ],
+      traps: [
+        {
+          body: '<strong>핸드크래프트 디테일에 들어가지 말 것.</strong> 그레이박스(회색 박스) 그대로 OK. 가구/배경/나뭇잎 같은 거 절대 넣지 말기. 모듈 검증이 우선.'
+        },
+        {
+          body: '<strong>5룸을 다 비슷하게 만들면 안 됨.</strong> 일부러 메커닉의 다른 면을 강조하는 룸을 의도적으로 분배할 것 (전투 위주 / 플랫포밍 위주 / 추격 위주 등).'
+        }
+      ],
+      outputs: [
+        { body: '<strong>Playable Prototype v0.2</strong>: 5룸 연결, 죽음/리스폰 작동' },
+        { body: '<strong>Room Module Catalog</strong>: 8~10개 모듈 사양' },
+        { body: '<strong>Surface Type Spec</strong>: 박힘 면 4~6종 정의' },
+      ]
+    },
+    {
+      id: 'p3',
+      name: 'Combat Depth / 적 다양화 + 레이어',
+      tagline: '30분 플레이에서 표현이 풍부한가, 천장이 보이는가',
+      duration: '2 주',
+      goal: '적 종류 + 마커 변수 1~2개를 추가해 표현 폭을 넓힘. <strong>호쾌함의 50%는 이 단계에서 결정</strong>됨.',
+      checklist: [
+        { tag: 'AI', text: '적 3~4종 추가 (근접 돌격 / 원거리 견제 / 마커 거부 / 폭발 자살형)' },
+        { tag: 'AI', text: '각 적이 메커닉적으로 의미있게 다른가 검증 (HP/속도만 다르면 실패)' },
+        { tag: 'RULE', text: '마커 변수 1~2개 추가 (관통? 폭발? 충전식? 마커 간 연쇄?)' },
+        { tag: 'RULE', text: '콤보/처형 시스템 또는 마커 처치 보너스' },
+        { tag: 'FX', text: '히트스탑 (1~3 frame) + 카메라 셰이크 + 줌 펀치' },
+        { tag: 'FX', text: '히트 이펙트 / 처형 이펙트 (placeholder 가능, 생동감 우선)' },
+        { tag: 'AUDIO', text: 'SFX placeholder (단검/타격/텔레포트/처형 4종 무료 에셋)' },
+        { tag: 'TEST', text: '본인 30분 풀플레이 → 매너리즘이 오는 시점 측정' },
+        { tag: 'FEEL', text: 'Phase 1 placeholder 폴리시 → 광고용 수준 재작업 (supplement §D)' },
+        { tag: 'RULE', text: 'Bounce Chain 변수 1개만 추가 (관통 OR 폭발 중 하나)' },
+      ],
+      kills: [
+        {
+          q: 'KILL CRITERIA',
+          body: '적 4종이 <strong>HP/속도 외에 메커닉적 차이</strong>를 만들지 못하면 다양화에 실패한 것. 각 적은 "이 적 때문에 플레이어의 의사결정이 달라져야" 함.'
+        },
+        {
+          q: 'KILL CRITERIA',
+          body: '본인 30분 플레이에서 <strong>10분 이내에 매너리즘</strong>이 오면 표현 폭이 부족. 마커 변수가 너무 적거나, 콤보/리워드 루프가 약함.'
+        }
+      ],
+      traps: [
+        {
+          body: '<strong>마커 변수 3개 이상 동시에 풀지 말 것.</strong> 인지부하가 폭발하고, 어떤 변수가 재미를 만드는지 검증 불가능해짐. 변수는 1개씩 추가/제거.'
+        },
+        {
+          body: '<strong>히트스탑/셰이크에 시간을 충분히 쓰세요.</strong> 호쾌함의 절반은 시각/촉각 피드백에서 옴. 닌자일섬도 이 부분에서 강함.'
+        }
+      ],
+      outputs: [
+        { body: '<strong>Playable Prototype v0.3</strong>: 적 다양화 + 콤보/처형 + 히트 피드백' },
+        { body: '<strong>Enemy Spec Sheet</strong>: 4종 패턴/HP/위협 등급' },
+        { body: '<strong>Combat Variables Doc</strong>: 마커 변수 사양' },
+      ]
+    },
+    {
+      id: 'p4',
+      name: 'Vertical Slice / 1챕터',
+      tagline: '15분짜리 1챕터가 트레일러/펀딩 자료로 쓸 수 있는 수준인가',
+      duration: '3 ~ 4 주',
+      goal: '8~12 룸 + 보스 1체로 구성된 1챕터를 핸드크래프트. <strong>외부 5명 플레이테스트가 진짜 검증</strong>이고, 여기서 GO/PIVOT/KILL이 결정됨.',
+      checklist: [
+        { tag: 'LD', text: '1챕터 (8~12 룸) 핸드크래프트 — 모듈 카탈로그 활용' },
+        { tag: 'LD', text: '챕터 내 난이도 곡선 설계 (티칭 → 응용 → 마스터리 → 보스)' },
+        { tag: 'AI', text: '보스 1체 (마커 메커닉을 강제로 활용해야 풀 수 있는 페이즈 2~3단계)' },
+        { tag: 'UI', text: 'HUD / 메뉴 / 설정 (placeholder 그래픽 OK, 기능 완성)' },
+        { tag: 'UI', text: '시작 / 클리어 / 죽음 카메라 연출 시퀀스' },
+        { tag: 'AUDIO', text: 'BGM placeholder 1~2곡 (무료 에셋 또는 AI 생성)' },
+        { tag: 'TEST', text: '외부 플레이테스트 5명 (게이머 친구 / Discord / 인디 커뮤니티)' },
+        { tag: 'TEST', text: '플레이테스트 영상 녹화 + "또 하고 싶나?" 직접 질문' },
+        { tag: 'MARKETING', text: '트레일러용 30초 클립 편집 (게임플레이만, 자막 없이)' },
+        { tag: 'TEST', text: 'Bounce Chain 룸 평균 텔레포트 횟수 측정 (room_base.gd 통계)' },
+      ],
+      kills: [
+        {
+          q: 'KILL CRITERIA',
+          body: '외부 5명 중 <strong>3명 이상이 "또 하고 싶다"고 답하지 않으면</strong> 위험 신호. 폴리시로 해결되지 않는 코어의 문제일 가능성 높음.'
+        },
+        {
+          q: 'KILL CRITERIA',
+          body: '플레이테스트 영상에서 <strong>3명 이상이 같은 룸에서 막힘 + 짜증</strong>을 보이면 그 룸은 룰 전달 실패. 챕터 내 티칭이 약한 것.'
+        },
+        {
+          q: 'KILL CRITERIA',
+          body: '본인이 트레일러 30초 클립을 만들 때 <strong>"보여줄 만한 장면이 없다"</strong>는 느낌이 들면 시각적 정체성 부족. 메커닉이 화면에서 안 살고 있음.'
+        }
+      ],
+      traps: [
+        {
+          body: '<strong>아트 폴리시에 너무 일찍 들어가지 마세요.</strong> 그레이박스 + 단순한 도트 캐릭터 정도가 적정선. 외부 테스터들도 게임플레이를 평가합니다.'
+        },
+        {
+          body: '<strong>플레이테스터에게 "어땠어?"라고만 묻지 말 것.</strong> "어디서 막혔어?" "다음에 뭐 할 거라고 생각했어?" 같은 행동/예측 질문을 해야 진짜 데이터 나옴.'
+        },
+        {
+          body: '<strong>1챕터를 너무 길게 만들지 말 것.</strong> 15분이 마지노선. 길어지면 외부 테스트 시 끝까지 안 함 → 데이터 망가짐.'
+        }
+      ],
+      outputs: [
+        { body: '<strong>Playable Vertical Slice v1.0</strong>: 15분 챕터 + 보스' },
+        { body: '<strong>Playtest Report</strong>: 5명 영상 + 정성/정량 데이터' },
+        { body: '<strong>Trailer Clip</strong>: 30초 게임플레이 컷' },
+        { body: '<strong>Production Estimate</strong>: 풀 게임 일정/비용 산정' },
+      ]
+    },
+    {
+      id: 'p5',
+      name: 'Go / No-Go Decision',
+      tagline: '풀 프로덕션 갈지, 피벗할지, 킬할지 결정',
+      duration: '1 주',
+      goal: '직감이 아니라 <strong>플레이테스트 데이터로 결정</strong>. 결정 내용을 1페이지 메모로 남겨야 6개월 뒤 후회하지 않음.',
+      checklist: [
+        { tag: 'DOC', text: '플레이테스트 결과 정리 (정성/정량 분리)' },
+        { tag: 'DOC', text: '본인 30분 풀플레이 매너리즘 곡선 그래프' },
+        { tag: 'DOC', text: '풀 프로덕션 일정 산정 (1챕터 ETA × 8~10)' },
+        { tag: 'DOC', text: '아트/사운드 외주 vs 에셋 vs 자체 제작 결정' },
+        { tag: 'MARKET', text: '시장 포지셔닝 1페이지 (닌자일섬/Cyber Shadow와의 차별점)' },
+        { tag: 'MARKET', text: '스팀 페이지 초안 (스크린샷 4장 + 트레일러 + 카피라이팅)' },
+        { tag: 'DECISION', text: 'GO / PIVOT / KILL 중 하나 명시적으로 선택 + 사유 1페이지' },
+      ],
+      kills: [
+        {
+          q: 'DECISION RULE',
+          body: '<strong>결정을 미루지 말 것.</strong> "조금만 더 만져보고"는 피벗을 늦추는 가장 흔한 함정. 데이터가 모호하면 PIVOT, 분명하면 GO 또는 KILL.'
+        }
+      ],
+      traps: [
+        {
+          body: '<strong>매몰비용 함정을 조심하세요.</strong> 10주 썼다고 풀 프로덕션을 강행하지 말 것. 풀 게임은 추가 8~12개월. 10주 매몰 vs 12개월 손실, 어느 쪽이 큰가?'
+        },
+        {
+          body: '<strong>피벗은 패배가 아닙니다.</strong> 코어 메커닉만 살리고 셸을 바꾸는 PIVOT은 시간 손실 최소. 닌자일섬도 The Messenger도 이런 피벗을 거쳤을 가능성이 큼.'
+        }
+      ],
+      outputs: [
+        { body: '<strong>Decision Memo</strong> 1페이지 (GO/PIVOT/KILL + 사유)' },
+        { body: '<strong>Full Production Plan</strong> (GO일 경우)' },
+        { body: '<strong>Pivot Spec</strong> (PIVOT일 경우)' },
+        { body: '<strong>Postmortem</strong> (KILL일 경우 — 다음 프로젝트 자산화)' },
+      ]
+    }
+  ];
+
+  // ============ RENDER ============
+  const phasesContainer = document.getElementById('phases');
+  const timelineEl = document.getElementById('timeline');
+  const STORAGE_KEY = 'dagger_marker_roadmap_v1';
+
+  // Load state
+  let state = {};
+  try{
+    state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  } catch(e){ state = {}; }
+
+  function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+  }
+
+  function isChecked(phaseId, idx){
+    return state[phaseId] && state[phaseId][idx] === true;
+  }
+  function setChecked(phaseId, idx, val){
+    if(!state[phaseId]) state[phaseId] = {};
+    state[phaseId][idx] = val;
+    saveState();
+  }
+
+  // Timeline
+  phases.forEach((p, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'timeline-cell';
+    cell.innerHTML = `
+      <div class="num">PHASE ${i}</div>
+      <div class="name">${p.name.split(' / ')[0]}</div>
+      <div class="dur">${p.duration}</div>
+    `;
+    cell.addEventListener('click', () => {
+      const target = document.getElementById(p.id);
+      if(target){
+        if(!target.classList.contains('open')) target.classList.add('open');
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+    timelineEl.appendChild(cell);
+  });
+
+  // Phases
+  phases.forEach((p, i) => {
+    const total = p.checklist.length;
+    const done = p.checklist.filter((_, idx) => isChecked(p.id, idx)).length;
+
+    const phaseEl = document.createElement('section');
+    phaseEl.className = 'phase' + (i === 0 ? ' open' : '');
+    phaseEl.id = p.id;
+
+    phaseEl.innerHTML = `
+      <div class="phase-head">
+        <div class="phase-num">0${i}</div>
+        <div class="phase-info">
+          <h3 class="phase-name">${p.name}</h3>
+          <div class="phase-tagline">${p.tagline}</div>
+        </div>
+        <div class="phase-meta">
+          <div class="duration">${p.duration}</div>
+          <div class="progress-mini"><b class="done-count">${done}</b> / ${total}</div>
+          <div class="chevron">▶</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-content">
+          <div class="col-left">
+            <div class="col-section">
+              <div class="section-title"><span class="dot"></span>GOAL</div>
+              <div class="goal-box">${p.goal}</div>
+            </div>
+            <div class="col-section">
+              <div class="section-title"><span class="dot"></span>CHECKLIST</div>
+              <ul class="checklist">
+                ${p.checklist.map((c, idx) => `
+                  <li data-idx="${idx}" class="${isChecked(p.id, idx) ? 'done' : ''}">
+                    <span class="check"></span>
+                    <span class="check-text"><span class="tag">${c.tag}</span>${c.text}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          </div>
+          <div class="col-right">
+            <div class="col-section">
+              <div class="section-title danger"><span class="dot"></span>KILL CRITERIA</div>
+              ${p.kills.map(k => `
+                <div class="kill-card">
+                  <div class="kill-q">${k.q}</div>
+                  <div class="kill-body">${k.body}</div>
+                </div>
+              `).join('')}
+            </div>
+            <div class="col-section">
+              <div class="section-title warn"><span class="dot"></span>TRAPS / 함정</div>
+              ${p.traps.map(t => `
+                <div class="trap-card">
+                  <div class="trap-label">⚠ TRAP</div>
+                  <div class="trap-body">${t.body}</div>
+                </div>
+              `).join('')}
+            </div>
+            <div class="col-section">
+              <div class="section-title ok"><span class="dot"></span>DELIVERABLES</div>
+              ${p.outputs.map(o => `
+                <div class="output-card">
+                  <div class="out-label">▸ OUTPUT</div>
+                  <div class="out-body">${o.body}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    phasesContainer.appendChild(phaseEl);
+
+    // Toggle
+    phaseEl.querySelector('.phase-head').addEventListener('click', () => {
+      phaseEl.classList.toggle('open');
+    });
+
+    // Checklist
+    phaseEl.querySelectorAll('.checklist li').forEach(li => {
+      li.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const idx = parseInt(li.dataset.idx);
+        const next = !li.classList.contains('done');
+        li.classList.toggle('done', next);
+        setChecked(p.id, idx, next);
+
+        const newDone = p.checklist.filter((_, j) => isChecked(p.id, j)).length;
+        phaseEl.querySelector('.done-count').textContent = newDone;
+        if(newDone === total) phaseEl.classList.add('complete');
+        else phaseEl.classList.remove('complete');
+
+        updateProgress();
+      });
+    });
+
+    if(done === total && total > 0) phaseEl.classList.add('complete');
+  });
+
+  // Overall progress
+  function updateProgress(){
+    const total = phases.reduce((s, p) => s + p.checklist.length, 0);
+    const done = phases.reduce((s, p) => s + p.checklist.filter((_, idx) => isChecked(p.id, idx)).length, 0);
+    const pct = total ? (done / total * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `${done} / ${total} · ${Math.round(pct)}%`;
+  }
+  updateProgress();
+
+  // Reset
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if(!confirm('전체 체크 상태를 초기화합니다. 계속할까요?')) return;
+    state = {};
+    saveState();
+    location.reload();
+  });
+</script>
+</body>
+</html>

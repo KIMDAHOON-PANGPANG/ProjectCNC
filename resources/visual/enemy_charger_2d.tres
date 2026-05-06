@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="VisualResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/visual_resource.gd" id="1_visual"]
+
+[resource]
+script = ExtResource("1_visual")
+dimension = 0
+greybox_color = Color(1, 0.4, 0.2, 1)
+greybox_size_2d = Vector2(12, 12)
+greybox_size_3d = Vector3(0.7, 0.7, 0.7)

@@ -1,0 +1,160 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/rooms/room_base.gd" id="1_room"]
+[ext_resource type="Script" path="res://scripts/world/spike_hazard.gd" id="2_spike"]
+
+[sub_resource type="RectangleShape2D" id="floor_left"]
+size = Vector2(80, 16)
+
+[sub_resource type="RectangleShape2D" id="floor_right"]
+size = Vector2(80, 16)
+
+[sub_resource type="RectangleShape2D" id="floor_middle"]
+size = Vector2(48, 16)
+
+[sub_resource type="RectangleShape2D" id="wall_shape"]
+size = Vector2(16, 240)
+
+[sub_resource type="RectangleShape2D" id="ceiling_shape"]
+size = Vector2(480, 16)
+
+[sub_resource type="RectangleShape2D" id="spike_shape"]
+size = Vector2(120, 16)
+
+[sub_resource type="RectangleShape2D" id="goal_shape"]
+size = Vector2(80, 16)
+
+[node name="Room09" type="Node2D"]
+script = ExtResource("1_room")
+room_id = "09_jump_puzzle"
+goal_point = NodePath("Goal")
+next_room_path = "res://scenes/rooms/room_10_mob_room.tscn"
+
+[node name="LeftFloor" type="StaticBody2D" parent="."]
+position = Vector2(40, 254)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape2D" parent="LeftFloor"]
+shape = SubResource("floor_left")
+
+[node name="Visual" type="ColorRect" parent="LeftFloor"]
+offset_left = -40.0
+offset_top = -8.0
+offset_right = 40.0
+offset_bottom = 8.0
+color = Color(0.4, 0.4, 0.4, 1)
+mouse_filter = 2
+
+[node name="MidFloat" type="StaticBody2D" parent="."]
+position = Vector2(240, 180)
+collision_layer = 2
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape2D" parent="MidFloat"]
+shape = SubResource("floor_middle")
+
+[node name="Visual" type="ColorRect" parent="MidFloat"]
+offset_left = -24.0
+offset_top = -8.0
+offset_right = 24.0
+offset_bottom = 8.0
+color = Color(1, 0.239, 0.541, 1)
+mouse_filter = 2
+
+[node name="RightFloor" type="StaticBody2D" parent="."]
+position = Vector2(440, 254)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape2D" parent="RightFloor"]
+shape = SubResource("floor_right")
+
+[node name="Visual" type="ColorRect" parent="RightFloor"]
+offset_left = -40.0
+offset_top = -8.0
+offset_right = 40.0
+offset_bottom = 8.0
+color = Color(0.4, 0.4, 0.4, 1)
+mouse_filter = 2
+
+[node name="LeftSpikes" type="Area2D" parent="."]
+position = Vector2(140, 254)
+script = ExtResource("2_spike")
+visual_size = Vector2(120, 8)
+
+[node name="Collision" type="CollisionShape2D" parent="LeftSpikes"]
+shape = SubResource("spike_shape")
+
+[node name="RightSpikes" type="Area2D" parent="."]
+position = Vector2(340, 254)
+script = ExtResource("2_spike")
+visual_size = Vector2(120, 8)
+
+[node name="Collision" type="CollisionShape2D" parent="RightSpikes"]
+shape = SubResource("spike_shape")
+
+[node name="Ceiling" type="StaticBody2D" parent="."]
+position = Vector2(240, 8)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape2D" parent="Ceiling"]
+shape = SubResource("ceiling_shape")
+
+[node name="Visual" type="ColorRect" parent="Ceiling"]
+offset_left = -240.0
+offset_top = -8.0
+offset_right = 240.0
+offset_bottom = 8.0
+color = Color(0.4, 0.4, 0.4, 1)
+mouse_filter = 2
+
+[node name="WallLeft" type="StaticBody2D" parent="."]
+position = Vector2(8, 135)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("wall_shape")
+
+[node name="Visual" type="ColorRect" parent="WallLeft"]
+offset_left = -8.0
+offset_top = -120.0
+offset_right = 8.0
+offset_bottom = 120.0
+color = Color(0.4, 0.4, 0.4, 1)
+mouse_filter = 2
+
+[node name="WallRight" type="StaticBody2D" parent="."]
+position = Vector2(472, 135)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape2D" parent="WallRight"]
+shape = SubResource("wall_shape")
+
+[node name="Visual" type="ColorRect" parent="WallRight"]
+offset_left = -8.0
+offset_top = -120.0
+offset_right = 8.0
+offset_bottom = 120.0
+color = Color(0.4, 0.4, 0.4, 1)
+mouse_filter = 2
+
+[node name="Spawn" type="Node2D" parent="."]
+position = Vector2(40, 230)
+
+[node name="Goal" type="Area2D" parent="."]
+position = Vector2(440, 230)
+
+[node name="Collision" type="CollisionShape2D" parent="Goal"]
+shape = SubResource("goal_shape")
+
+[node name="GoalVisual" type="ColorRect" parent="Goal"]
+offset_left = -40.0
+offset_top = -8.0
+offset_right = 40.0
+offset_bottom = 8.0
+color = Color(0.29, 0.86, 0.5, 0.4)
+mouse_filter = 2

@@ -1,0 +1,101 @@
+[gd_scene format=3 uid="uid://di0obc3om56a8"]
+
+[ext_resource type="PackedScene" path="res://scenes/player/player_2d.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/dummy_2d.tscn" id="2_dummy"]
+[ext_resource type="Script" uid="uid://bccq51dpipo5s" path="res://scripts/ui/edge_indicator.gd" id="3_edge_indicator"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(480, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
+size = Vector2(480, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(16, 240)
+
+[node name="Main" type="Node2D" unique_id=305839567]
+
+[node name="World" type="Node2D" parent="." unique_id=6185760]
+
+[node name="Floor" type="StaticBody2D" parent="World" unique_id=1519809123]
+position = Vector2(240, 254)
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape2D" parent="World/Floor" unique_id=1046566600]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="Visual" type="ColorRect" parent="World/Floor" unique_id=375392952]
+offset_left = -240.0
+offset_top = -8.0
+offset_right = 240.0
+offset_bottom = 8.0
+mouse_filter = 2
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="Ceiling" type="StaticBody2D" parent="World" unique_id=188762830]
+position = Vector2(240, 8)
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape2D" parent="World/Ceiling" unique_id=1027205567]
+shape = SubResource("RectangleShape2D_ceiling")
+
+[node name="Visual" type="ColorRect" parent="World/Ceiling" unique_id=1145776352]
+offset_left = -240.0
+offset_top = -8.0
+offset_right = 240.0
+offset_bottom = 8.0
+mouse_filter = 2
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="WallLeft" type="StaticBody2D" parent="World" unique_id=1438228645]
+position = Vector2(8, 135)
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape2D" parent="World/WallLeft" unique_id=1102199724]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="ColorRect" parent="World/WallLeft" unique_id=755352382]
+offset_left = -8.0
+offset_top = -120.0
+offset_right = 8.0
+offset_bottom = 120.0
+mouse_filter = 2
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="WallRight" type="StaticBody2D" parent="World" unique_id=1692271131]
+position = Vector2(472, 135)
+collision_layer = 2
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape2D" parent="World/WallRight" unique_id=178961770]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="ColorRect" parent="World/WallRight" unique_id=567136665]
+offset_left = -8.0
+offset_top = -120.0
+offset_right = 8.0
+offset_bottom = 120.0
+mouse_filter = 2
+color = Color(1, 0.239, 0.541, 1)
+
+[node name="Dummy" parent="World" unique_id=507943383 instance=ExtResource("2_dummy")]
+position = Vector2(360, 242)
+
+[node name="DaggerLayer" type="Node2D" parent="." unique_id=465752954]
+z_index = 10
+
+[node name="Player" parent="." unique_id=1499704344 instance=ExtResource("1_player")]
+position = Vector2(240, 200)
+dagger_layer_path = NodePath("../DaggerLayer")
+
+[node name="Camera" type="Camera2D" parent="Player" unique_id=665367013]
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=508157878]
+
+[node name="EdgeIndicator" type="Control" parent="HUD" unique_id=1110717215]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("3_edge_indicator")

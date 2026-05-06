@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/player_body_2d.gd" id="1_player_script"]
+[ext_resource type="Resource" path="res://resources/visual/player_visual_2d.tres" id="2_player_visual"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(8, 16)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 35
+script = ExtResource("1_player_script")
+visual = ExtResource("2_player_visual")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_player")

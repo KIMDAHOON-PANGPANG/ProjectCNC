@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/melee_charger.gd" id="1_script"]
+[ext_resource type="Resource" path="res://resources/visual/enemy_charger_2d.tres" id="2_visual"]
+
+[sub_resource type="RectangleShape2D" id="shape"]
+size = Vector2(12, 12)
+
+[node name="MeleeCharger" type="CharacterBody2D"]
+collision_layer = 8
+collision_mask = 1
+script = ExtResource("1_script")
+visual = ExtResource("2_visual")
+max_hp = 1
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("shape")
