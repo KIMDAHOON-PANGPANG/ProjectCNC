@@ -128,7 +128,21 @@ SaveWork/env_check.sh 끝부분 명령 그대로. 통과 후 작업 시작.
 - `scenes/test/combat_test.tscn` (sandbox 베이스 + Left/Right/Mid 플랫폼 + Chaser @ (380,240))
 - §I-7 3단계 검증 PASS (import / combat_test 5s 부팅 / sandbox sim 모두 exit 0, 필터링 후 에러 0)
 - 사용자: 에디터에서 `scenes/test/combat_test.tscn` 열고 F6 → NEXT_TASK_combat_test.md §2 시나리오 7개 수동 테스트
-- 결과 보고 시 정상 → 적 4종 통합 / 에러 → §9 표 매칭 → 수정
+- 결과 보고 시 정상 → A-3 진행 / 에러 → §9 표 매칭 → 수정
+- 원격: PR #1 (`claude/melee-chaser-1` → master) https://github.com/KIMDAHOON-PANGPANG/ProjectCNC/pull/1
+
+### **A-3. 적 5종 통합 아레나** ← 사용자 수동 검증 대기 (2026-05-08)
+- `scenes/test/combat_test_v2.tscn` (720x320 아레나, 다층 플랫폼 5개)
+- 적 5종 동시 배치:
+  - Chaser @ (260,280) — 좌측 floor, 즉시 추적
+  - Bomber @ (440,280) — 중앙 floor, 60px 진입 시 1s fuse → 36px 폭발
+  - Charger @ (660,280) — 우측 floor, 텔레그래프 0.6s 후 돌진
+  - Ranged @ (360,100) — HighMidPlatform 위, 220px 사거리 1.6s 간격 사격
+  - Denier @ (480,180) — MidRightPlatform 위, 마커 추적해 expire
+- Player @ (50,280) — 좌측 시작
+- 주의: combat_test_v2는 RoomBase가 아니라 Ranged/Bomber의 `respawn_player()`는 no-op (적 행동 자체는 정상)
+- §I-7 3단계 검증 PASS
+- 사용자: F6으로 부팅 → 5종 동시 위협 처리 흐름 확인 (콤보 → 단검 견제 → 텔레포트 회피 → 처형 사이클)
 
 ### **B. Phase 3 폴리시 강화** (계획 §G "광고용 수준")
 GPUParticles2D / 디졸브 셰이더 / 표면별 5종 SFX / 색수차 / 모션 라인.
@@ -313,11 +327,13 @@ export GODOT_LOG="$USERDATA/logs/godot.log"
 8. SaveWork 작성 → 완료
 9. 이 문서 환경 호환성 강화 + env_check.sh 추가 → 완료
 10. NEXT_TASK_combat_test.md 작성 (chaser + 전투 테스트 씬 계획) → 완료
-11. **melee_chaser + combat_test.tscn 구현 + §I-7 검증 PASS** ← 현재 (2026-05-08)
+11. melee_chaser + combat_test.tscn 구현 + §I-7 검증 PASS → 완료, PR #1 생성 (claude/melee-chaser-1)
+12. **combat_test_v2.tscn 구현 (적 5종 통합 아레나) + §I-7 검증 PASS** ← 현재 (2026-05-08)
 
 다음 세션 시작 시:
 - 사용자 chapter_1 검증 결과 받기 (미응답)
-- 사용자 combat_test.tscn 수동 테스트 결과 받기 (NEXT_TASK_combat_test.md §2 시나리오)
+- 사용자 combat_test.tscn 수동 테스트 결과 받기 (A-2)
+- 사용자 combat_test_v2.tscn 수동 테스트 결과 받기 (A-3)
 - 또는 새 요청 처리
 
 ---
